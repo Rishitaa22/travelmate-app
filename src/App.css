@@ -136,7 +136,7 @@ input:checked + .slider:before {
 .app-container h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--text-color); /* Adjusted to use text-color for better theme switching */
     text-align: center;
     margin-bottom: 8px;
     transition: color 0.3s ease;
@@ -205,6 +205,13 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    text-align: left; /* Ensure text inside is aligned left */
+}
+
+.results-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0; /* Adjusted since gap handles spacing */
+    color: var(--text-color);
 }
 
 .result-card {
@@ -253,15 +260,26 @@ input:checked + .slider:before {
 .result-card-details .value {
     font-size: 1rem;
     font-weight: 500;
+    color: var(--text-color);
 }
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--card-shadow);
+}
+
 
 /* -------------------------------------------------- */
 /* 5. Responsive Design                             */
 /* -------------------------------------------------- */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .theme-switcher-container {
         position: static;
         margin-bottom: 24px;
+        text-align: center;
     }
 
     .logo-container {
@@ -273,8 +291,7 @@ input:checked + .slider:before {
     }
     
     .logo-text {
-        font-size: 32px; /* 2rem */
-        text-align: center;
+        font-size: 2rem;
     }
 
     .app-container h1 {
@@ -296,9 +313,11 @@ input:checked + .slider:before {
     }
 
     .result-card-details {
+        flex-wrap: wrap; /* Allow details to wrap on smaller screens */
         justify-content: space-between;
         width: 100%;
         text-align: left;
         gap: 16px;
     }
 }
+
