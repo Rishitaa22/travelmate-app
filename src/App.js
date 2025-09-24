@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // --- MOCK DATA (from data.json) ---
 // In a real app, this would be fetched from an API.
@@ -29,7 +29,6 @@ const travelData = [
       { "id": 8, "type": "Train", "carrier": "Shinkansen", "departureTime": "15:30", "arrivalTime": "17:45", "duration": "2h 15m", "price": 130 }
     ]
   },
-  // --- ADDED DATA: New route from Kochi to Kolkata ---
   {
     "from": "Kochi Grand Hayyat",
     "to": "Kolkata",
@@ -41,168 +40,277 @@ const travelData = [
   }
 ];
 
-// --- STYLES (from App.css) ---
+// --- STYLES (from App.css, adapted for this component structure) ---
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f0f4f8;
-    color: #1e293b;
-    margin: 0;
-    padding: 20px;
+  /* -------------------------------------------------- */
+  /* 1. General & Base Styles w/ CSS Variables          */
+  /* -------------------------------------------------- */
+  :root {
+      /* Light Mode (Default) */
+      --primary-color: #005A9C;
+      --primary-color-darker: #004B80;
+      --background-color: #F8F9FA;
+      --text-color: #333333;
+      --text-color-light: #555;
+      --card-background: #FFFFFF;
+      --card-shadow: rgba(0, 0, 0, 0.08);
+      --border-color: #dcdcdc;
+      --focus-shadow: rgba(0, 90, 156, 0.2);
+      --switch-bg: #ccc;
+      --switch-handle: white;
   }
 
+  body.dark-mode {
+      /* Dark Mode */
+      --primary-color: #4dabf7;
+      --primary-color-darker: #3690e3;
+      --background-color: #121212;
+      --text-color: #e0e0e0;
+      --text-color-light: #a0a0a0;
+      --card-background: #1e1e1e;
+      --card-shadow: rgba(0, 0, 0, 0.4);
+      --border-color: #444;
+      --focus-shadow: rgba(77, 171, 247, 0.3);
+      --switch-bg: #005A9C;
+      --switch-handle: #121212;
+  }
+
+  * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+  }
+
+  body {
+      font-family: 'Inter', 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      padding: 20px;
+  }
+
+  /* -------------------------------------------------- */
+  /* 2. Main App Layout & Typography                  */
+  /* -------------------------------------------------- */
   .app-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
   }
 
   .app-header {
-    background-color: #4f46e5;
-    color: white;
-    padding: 24px;
-    text-align: center;
+      padding: 24px;
+      text-align: center;
+  }
+  
+  .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+  }
+
+  .logo-icon {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+      fill: var(--primary-color);
+      transition: fill 0.3s ease;
+  }
+
+  .logo-text {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      user-select: none;
+      letter-spacing: 0.02em;
+      transition: color 0.3s ease;
   }
 
   .app-header h1 {
-    margin: 0;
-    font-size: 2.25rem;
-    font-weight: 700;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
   }
-  
+
   .app-header p {
-    margin: 4px 0 0;
-    opacity: 0.9;
+      text-align: center;
+      font-size: 1.125rem;
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      color: var(--text-color-light);
+      transition: color 0.3s ease;
   }
 
-  .content-wrapper {
-    padding: 24px;
-  }
-
-  /* SearchForm Styles */
+  /* -------------------------------------------------- */
+  /* 3. Search Form                                   */
+  /* -------------------------------------------------- */
   .search-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .search-form-inputs {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 48px;
   }
 
   .search-form input {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+      flex-grow: 1;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--card-background);
+      color: var(--text-color);
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease, color 0.3s ease;
   }
 
   .search-form input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--focus-shadow);
   }
 
   .search-form button {
-    background-color: #4f46e5;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100%;
-  }
-  
-  @media (min-width: 640px) {
-    .search-form {
-      flex-direction: row;
-      align-items: center;
-    }
-    .search-form button {
-      width: auto;
-    }
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out, transform 0.1s ease;
   }
 
   .search-form button:hover {
-    background-color: #4338ca;
+      background-color: var(--primary-color-darker);
   }
 
-  /* ResultsDisplay & ResultCard Styles */
+  .search-form button:active {
+      transform: translateY(1px);
+  }
+
+  /* -------------------------------------------------- */
+  /* 4. Results Section                               */
+  /* -------------------------------------------------- */
+  .results-container {
+      text-align: left;
+  }
+
   .results-container h2 {
     font-size: 1.5rem;
     margin-bottom: 16px;
-    color: #334155;
+    color: var(--text-color);
   }
-
+  
   .results-grid {
-    display: grid;
-    gap: 16px;
+      display: grid;
+      gap: 20px;
   }
 
   .result-card {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px;
+      background-color: var(--card-background);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease;
+      text-align: left;
   }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+  .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px var(--card-shadow);
   }
   
   .card-header .type {
-    background-color: #e0e7ff;
-    color: #4338ca;
-    padding: 4px 10px;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 0.875rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      transition: color 0.3s ease;
   }
   
-  .card-header .price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1e293b;
+  .card-body {
+    margin-top: 4px;
   }
   
   .card-body .carrier {
-    font-weight: 600;
-    font-size: 1.125rem;
-    color: #475569;
+      font-size: 1rem;
+      color: var(--text-color-light);
   }
-  
+
   .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #64748b;
-    font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      text-align: right;
+  }
+
+  .card-footer div {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .card-footer .label {
+      font-size: 0.875rem;
+      color: var(--text-color-light);
+      margin-bottom: 2px;
+      transition: color 0.3s ease;
+  }
+
+  .card-footer .value {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-color);
   }
   
   .no-results {
     text-align: center;
     padding: 40px;
-    background-color: #f8fafc;
-    border-radius: 8px;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--card-shadow);
+  }
+
+
+  /* -------------------------------------------------- */
+  /* 5. Responsive Design                             */
+  /* -------------------------------------------------- */
+  @media (max-width: 640px) {
+      .logo-text {
+          font-size: 32px; /* 2rem */
+      }
+
+      .app-header h1 {
+          font-size: 2rem;
+      }
+      .app-header p {
+          font-size: 1rem;
+      }
+
+      .search-form {
+          flex-direction: column;
+          align-items: stretch;
+      }
+
+      .result-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+      }
+
+      .card-footer {
+          justify-content: space-between;
+          width: 100%;
+          text-align: left;
+          gap: 16px;
+      }
   }
 `;
 
@@ -210,16 +318,31 @@ const styles = `
 const ResultCard = ({ option }) => {
   return (
     <div className="result-card">
-      <div className="card-header">
-        <span className="type">{option.type}</span>
-        <span className="price">${option.price}</span>
-      </div>
-      <div className="card-body">
-        <p className="carrier">{option.carrier}</p>
-      </div>
+        <div>
+            <div className="card-header">
+                <span className="type">{option.type}</span>
+            </div>
+            <div className="card-body">
+                <p className="carrier">{option.carrier}</p>
+            </div>
+        </div>
       <div className="card-footer">
-        <span>{option.departureTime} &rarr; {option.arrivalTime}</span>
-        <span>{option.duration}</span>
+          <div>
+            <span className="label">Depart</span>
+            <span className="value">{option.departureTime}</span>
+          </div>
+          <div>
+            <span className="label">Arrive</span>
+            <span className="value">{option.arrivalTime}</span>
+          </div>
+          <div>
+            <span className="label">Duration</span>
+            <span className="value">{option.duration}</span>
+          </div>
+          <div>
+            <span className="label">Price</span>
+            <span className="value">${option.price}</span>
+          </div>
       </div>
     </div>
   );
@@ -229,13 +352,15 @@ const ResultCard = ({ option }) => {
 const ResultsDisplay = ({ searchResults }) => {
   return (
     <div className="results-container">
-      <h2>Available Options</h2>
       {searchResults.length > 0 ? (
-        <div className="results-grid">
-          {searchResults.map(option => (
-            <ResultCard key={option.id} option={option} />
-          ))}
-        </div>
+          <>
+            <h2>Available Options</h2>
+            <div className="results-grid">
+              {searchResults.map(option => (
+                <ResultCard key={option.id} option={option} />
+              ))}
+            </div>
+          </>
       ) : (
         <div className="no-results">
           <p>No results found. Please enter a valid route to see options.</p>
@@ -259,22 +384,20 @@ const SearchForm = ({ handleSearch }) => {
 
   return (
     <form onSubmit={handleSubmit} className="search-form">
-      <div className="search-form-inputs">
-        <input
-          type="text"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
-          placeholder="From"
-          aria-label="Departure location"
-        />
-        <input
-          type="text"
-          value={to}
-          onChange={(e) => setTo(e.target.value)}
-          placeholder="To"
-          aria-label="Arrival location"
-        />
-      </div>
+      <input
+        type="text"
+        value={from}
+        onChange={(e) => setFrom(e.target.value)}
+        placeholder="From"
+        aria-label="Departure location"
+      />
+      <input
+        type="text"
+        value={to}
+        onChange={(e) => setTo(e.target.value)}
+        placeholder="To"
+        aria-label="Arrival location"
+      />
       <button type="submit">Search</button>
     </form>
   );
@@ -300,8 +423,9 @@ export default function App() {
       setSearchResults([]);
     }
   };
-  
-  React.useEffect(() => {
+ 
+  useEffect(() => {
+    // Perform an initial search on component mount
     handleSearch('Kochi Grand Hayyat', 'Kolkata');
   }, []);
 
@@ -310,8 +434,12 @@ export default function App() {
       <style>{styles}</style>
       <div className="app-container">
         <header className="app-header">
-          <h1>TravelMate</h1>
-          <p>Your simple travel planner</p>
+            <div className="logo-container">
+                <svg className="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 11.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                <div className="logo-text">TravelMate</div>
+            </div>
+            <h1>Find Your Next Journey</h1>
+            <p>Enter your origin and destination to see the best options.</p>
         </header>
         <main className="content-wrapper">
           <SearchForm handleSearch={handleSearch} />
@@ -321,4 +449,3 @@ export default function App() {
     </>
   );
 }
-
