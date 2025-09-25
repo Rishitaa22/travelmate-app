@@ -1,1 +1,153 @@
+[
+  {
+    "from": "Trivandrum",
+    "to": "Kochi",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Vande Bharat Express",
+        "time": "3 hours 30 minutes",
+        "cost": 850,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "KSRTC Swift Scania",
+        "time": "5 hours",
+        "cost": 480,
+        "ecoFriendly": false
+      }
+    ]
+  },
+  {
+    "from": "Trivandrum",
+    "to": "Bangalore",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Kanyakumari-Bengaluru Express",
+        "time": "16 hours",
+        "cost": 750,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "Kallada Sleeper",
+        "time": "12 hours",
+        "cost": 1100,
+        "ecoFriendly": false
+      },
+      {
+        "mode": "Flight",
+        "name": "IndiGo 6E 404",
+        "time": "1 hour 15 minutes",
+        "cost": 3200,
+        "ecoFriendly": false
+      }
+    ]
+  },
+  {
+    "from": "Kochi",
+    "to": "Chennai",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Chennai Express",
+        "time": "11 hours 45 minutes",
+        "cost": 620,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "SRM Volvo Multi-Axle",
+        "time": "10 hours 30 minutes",
+        "cost": 1050,
+        "ecoFriendly": false
+      },
+      {
+        "mode": "Flight",
+        "name": "Air India Express IX 555",
+        "time": "1 hour 10 minutes",
+        "cost": 2900,
+        "ecoFriendly": false
+      }
+    ]
+  }
+]
+[
+  {
+    "from": "Trivandrum",
+    "to": "Kochi",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Vande Bharat Express",
+        "time": "3 hours 30 minutes",
+        "cost": 850,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "KSRTC Swift Scania",
+        "time": "5 hours",
+        "cost": 480,
+        "ecoFriendly": false
+      }
+    ]
+  },
+  {
+    "from": "Trivandrum",
+    "to": "Bangalore",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Kanyakumari-Bengaluru Express",
+        "time": "16 hours",
+        "cost": 750,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "Kallada Sleeper",
+        "time": "12 hours",
+        "cost": 1100,
+        "ecoFriendly": false
+      },
+      {
+        "mode": "Flight",
+        "name": "IndiGo 6E 404",
+        "time": "1 hour 15 minutes",
+        "cost": 3200,
+        "ecoFriendly": false
+      }
+    ]
+  },
+  {
+    "from": "Kochi",
+    "to": "Chennai",
+    "options": [
+      {
+        "mode": "Train",
+        "name": "Chennai Express",
+        "time": "11 hours 45 minutes",
+        "cost": 620,
+        "ecoFriendly": true
+      },
+      {
+        "mode": "Bus",
+        "name": "SRM Volvo Multi-Axle",
+        "time": "10 hours 30 minutes",
+        "cost": 1050,
+        "ecoFriendly": false
+      },
+      {
+        "mode": "Flight",
+        "name": "Air India Express IX 555",
+        "time": "1 hour 10 minutes",
+        "cost": 2900,
+        "ecoFriendly": false
+      }
+    ]
+  }
+]
 
